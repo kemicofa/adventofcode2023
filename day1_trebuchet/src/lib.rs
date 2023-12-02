@@ -50,7 +50,7 @@ fn find_first_and_last_digits(line: &str) -> [(u32, Option<usize>); 2] {
     for i in 0..bytes.len() {
         let left_byte = bytes.get(i).unwrap();
         let right_index = bytes.len() - 1 - i;
-        let right_byte = bytes.get(bytes.len() - 1 - i).unwrap();
+        let right_byte = bytes.get(right_index).unwrap();
 
         if first_index.is_none() {
             match byte_to_digit(left_byte) {
@@ -98,14 +98,18 @@ fn map_word_to_digit(word: &str) -> u32 {
     panic!("Should never arrive here");
 }
 
+fn split_and_clean_input_into_lines(input: &str) -> Vec<&str> {
+    input
+    .trim()
+    .split('\n')
+    .map(|line| line.trim())
+    .collect::<Vec<&str>>()
+}
+
 pub fn trebuchet(input: &str) -> u32 {
     let mut numbers: Vec<u32> = Vec::new();
 
-    let lines: Vec<&str> = input
-        .trim()
-        .split('\n')
-        .map(|line| line.trim())
-        .collect::<Vec<&str>>();
+    let lines: Vec<&str> = split_and_clean_input_into_lines(input);
 
     for line in lines {
         // if by coincidence the first or last character
