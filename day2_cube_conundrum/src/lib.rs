@@ -20,43 +20,78 @@
     In the example above, games 1, 2, and 5 would have been possible if the bag had been loaded with that configuration. However, game 3 would have been impossible because at one point the Elf showed you 20 red cubes at once; similarly, game 4 would also have been impossible because the Elf showed you 15 blue cubes at once. If you add up the IDs of the games that would have been possible, you get 8.
 
     Determine which games would have been possible if the bag had been loaded with only 12 red cubes, 13 green cubes, and 14 blue cubes. What is the sum of the IDs of those games?
-*/
 
-use std::{collections::HashMap, env::join_paths};
+    --- Part Two ---
+    The Elf says they've stopped producing snow because they aren't getting any water! He isn't sure why the water stopped; however, he can show you how to get to the water source to check it out for yourself. It's just up ahead!
+
+    As you continue your walk, the Elf poses a second question: in each game you played, what is the fewest number of cubes of each color that could have been in the bag to make the game possible?
+
+    Again consider the example games from earlier:
+
+    Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+    Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+    Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
+    Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
+    Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
+    In game 1, the game could have been played with as few as 4 red, 2 green, and 6 blue cubes. If any color had even one fewer cube, the game would have been impossible.
+    Game 2 could have been played with a minimum of 1 red, 3 green, and 4 blue cubes.
+    Game 3 must have been played with at least 20 red, 13 green, and 6 blue cubes.
+    Game 4 required at least 14 red, 3 green, and 15 blue cubes.
+    Game 5 needed no fewer than 6 red, 3 green, and 2 blue cubes in the bag.
+    The power of a set of cubes is equal to the numbers of red, green, and blue cubes multiplied together. The power of the minimum set of cubes in game 1 is 48. In games 2-5 it was 12, 1560, 630, and 36, respectively. Adding up these five powers produces the sum 2286.
+*/
 
 use utils::split_and_clean_input_into_lines;
 
 #[derive(Debug)]
 struct Game {
     id: u32,
-    sets: Vec<GameSet>
+    sets: Vec<GameSet>,
+}
+
+impl Game {
+    pub fn get_power(&self) -> u32 {
+        let mut max_red_count: u32 = 1;
+        let mut max_blue_count: u32 = 1;
+        let mut max_green_count: u32 = 1;
+
+        for set in &self.sets {
+            if set.blue_count.is_some() {
+                let blue_count = set.blue_count.unwrap();
+                if blue_count > max_blue_count {
+                    max_blue_count = blue_count;
+                }
+            }
+            if set.red_count.is_some() {
+                let red_count = set.red_count.unwrap();
+                if red_count > max_red_count {
+                    max_red_count = red_count;
+                }
+            }
+            if set.green_count.is_some() {
+                let green_count = set.green_count.unwrap();
+                if green_count > max_green_count {
+                    max_green_count = green_count;
+                }
+            }
+        }
+
+        max_red_count * max_green_count * max_blue_count
+    }
 }
 
 #[derive(Debug)]
 struct GameSet {
-    cube_results: Vec<CubeResult>
+    red_count: Option<u32>,
+    blue_count: Option<u32>,
+    green_count: Option<u32>,
 }
 
 #[derive(Debug, Eq, PartialEq, Hash)]
 pub enum CubeColor {
     RED,
     BLUE,
-    GREEN
-}
-
-#[derive(Debug)]
-pub struct CubeResult {
-    color: CubeColor,
-    count: u32
-}
-
-impl CubeResult {
-    pub fn new(count: u32, color: CubeColor) -> Self {
-        Self {
-            color,
-            count
-        }
-    }
+    GREEN,
 }
 
 fn map_color_str_to_cube_color(color: &str) -> CubeColor {
@@ -64,7 +99,7 @@ fn map_color_str_to_cube_color(color: &str) -> CubeColor {
         "red" => CubeColor::RED,
         "blue" => CubeColor::BLUE,
         "green" => CubeColor::GREEN,
-        _ => panic!("Should never happen")
+        _ => panic!("Should never happen"),
     }
 }
 
@@ -72,68 +107,53 @@ fn parse_input(input: &str) -> Vec<Game> {
     split_and_clean_input_into_lines(input)
         .iter()
         .map(|raw_game| {
-            let (game_meta, sets_data) = raw_game
-                .trim()
-                .split_once(':')
-                .unwrap();
+            let (game_meta, sets_data) = raw_game.trim().split_once(':').unwrap();
 
             let game_id = game_meta.split_once(' ').unwrap().1.parse::<u32>().unwrap();
 
-            let sets = sets_data.split(';').map(|raw_set| {
-                let cube_results = raw_set.split(',').map(|raw_balls_data| {
-                    let (ball_count_str, color) = raw_balls_data.trim().split_once(' ').unwrap();
-                    let cube_color = map_color_str_to_cube_color(color);
-                    let ball_count = ball_count_str.parse::<u32>().unwrap();
+            let sets = sets_data
+                .split(';')
+                .map(|raw_set| {
+                    let mut red_count: Option<u32> = Option::None;
+                    let mut blue_count: Option<u32> = Option::None;
+                    let mut green_count: Option<u32> = Option::None;
 
-                    CubeResult {
-                        count: ball_count,
-                        color: cube_color
+                    for raw_balls_data in raw_set.split(',') {
+                        let (ball_count_str, color) =
+                            raw_balls_data.trim().split_once(' ').unwrap();
+                        let cube_color = map_color_str_to_cube_color(color);
+                        let ball_count = ball_count_str.parse::<u32>().unwrap();
+
+                        match cube_color {
+                            CubeColor::BLUE => blue_count = Some(ball_count),
+                            CubeColor::GREEN => green_count = Some(ball_count),
+                            CubeColor::RED => red_count = Some(ball_count),
+                        };
+                    }
+
+                    GameSet {
+                        red_count,
+                        blue_count,
+                        green_count,
                     }
                 })
-                .collect::<Vec<CubeResult>>();
+                .collect::<Vec<GameSet>>();
 
-                GameSet {
-                    cube_results
-                }
-            })
-            .collect::<Vec<GameSet>>();
-
-            Game {
-                id: game_id,
-                sets
-            }
+            Game { id: game_id, sets }
         })
         .collect::<Vec<Game>>()
 }
 
-type ExpectedCubeResults = HashMap<CubeColor, u32>;
-
-pub fn cube_conundrum(input: &str, expected_cube_results: ExpectedCubeResults) -> u32 {
+pub fn cube_conundrum(input: &str) -> u32 {
     let games = parse_input(input);
 
     let mut game_id_sum: u32 = 0;
     for game in games {
-        let mut game_is_possible = true;
-        for set in game.sets {
-            for cube_result in set.cube_results {
-                let expected_cube_result = expected_cube_results.get(&cube_result.color).unwrap();
-                if cube_result.count > *expected_cube_result {
-                    game_is_possible = false;
-                    break;
-                }
-            }
-            if !game_is_possible {
-                break;
-            }
-        }
-        if game_is_possible {
-            game_id_sum += game.id;
-        }
+        game_id_sum += game.get_power();
     }
-    
+
     game_id_sum
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -149,11 +169,7 @@ mod tests {
             Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
         "#;
 
-        let mut expected_cube_result = HashMap::new();
-        expected_cube_result.insert(CubeColor::BLUE, 14);
-        expected_cube_result.insert(CubeColor::RED, 12);
-        expected_cube_result.insert(CubeColor::GREEN, 13);
-        assert_eq!(cube_conundrum(input, expected_cube_result), 8);
+        assert_eq!(cube_conundrum(input), 2286);
     }
 
     #[test]
@@ -260,11 +276,6 @@ mod tests {
             Game 99: 7 green, 2 red, 5 blue; 9 red, 17 green, 19 blue; 8 red, 12 blue, 1 green; 11 red, 11 green, 10 blue; 19 green, 4 blue, 2 red
             Game 100: 4 blue, 3 green; 5 blue, 12 green; 16 green, 1 red, 1 blue; 2 blue, 1 green; 1 red, 3 blue, 18 green; 3 green, 1 red, 3 blue
         "#;
-
-        let mut expected_cube_result = HashMap::new();
-        expected_cube_result.insert(CubeColor::BLUE, 14);
-        expected_cube_result.insert(CubeColor::RED, 12);
-        expected_cube_result.insert(CubeColor::GREEN, 13);
-        assert_eq!(cube_conundrum(input, expected_cube_result), 2256);
+        assert_eq!(cube_conundrum(input), 74229);
     }
 }
