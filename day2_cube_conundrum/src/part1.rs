@@ -29,33 +29,30 @@ use utils::split_and_clean_input_into_lines;
 #[derive(Debug)]
 struct Game {
     id: u32,
-    sets: Vec<GameSet>
+    sets: Vec<GameSet>,
 }
 
 #[derive(Debug)]
 struct GameSet {
-    cube_results: Vec<CubeResult>
+    cube_results: Vec<CubeResult>,
 }
 
 #[derive(Debug, Eq, PartialEq, Hash)]
 pub enum CubeColor {
     RED,
     BLUE,
-    GREEN
+    GREEN,
 }
 
 #[derive(Debug)]
 pub struct CubeResult {
     color: CubeColor,
-    count: u32
+    count: u32,
 }
 
 impl CubeResult {
     pub fn new(count: u32, color: CubeColor) -> Self {
-        Self {
-            color,
-            count
-        }
+        Self { color, count }
     }
 }
 
@@ -64,7 +61,7 @@ fn map_color_str_to_cube_color(color: &str) -> CubeColor {
         "red" => CubeColor::RED,
         "blue" => CubeColor::BLUE,
         "green" => CubeColor::GREEN,
-        _ => panic!("Should never happen")
+        _ => panic!("Should never happen"),
     }
 }
 
@@ -72,36 +69,33 @@ fn parse_input(input: &str) -> Vec<Game> {
     split_and_clean_input_into_lines(input)
         .iter()
         .map(|raw_game| {
-            let (game_meta, sets_data) = raw_game
-                .trim()
-                .split_once(':')
-                .unwrap();
+            let (game_meta, sets_data) = raw_game.trim().split_once(':').unwrap();
 
             let game_id = game_meta.split_once(' ').unwrap().1.parse::<u32>().unwrap();
 
-            let sets = sets_data.split(';').map(|raw_set| {
-                let cube_results = raw_set.split(',').map(|raw_balls_data| {
-                    let (ball_count_str, color) = raw_balls_data.trim().split_once(' ').unwrap();
-                    let cube_color = map_color_str_to_cube_color(color);
-                    let ball_count = ball_count_str.parse::<u32>().unwrap();
+            let sets = sets_data
+                .split(';')
+                .map(|raw_set| {
+                    let cube_results = raw_set
+                        .split(',')
+                        .map(|raw_balls_data| {
+                            let (ball_count_str, color) =
+                                raw_balls_data.trim().split_once(' ').unwrap();
+                            let cube_color = map_color_str_to_cube_color(color);
+                            let ball_count = ball_count_str.parse::<u32>().unwrap();
 
-                    CubeResult {
-                        count: ball_count,
-                        color: cube_color
-                    }
+                            CubeResult {
+                                count: ball_count,
+                                color: cube_color,
+                            }
+                        })
+                        .collect::<Vec<CubeResult>>();
+
+                    GameSet { cube_results }
                 })
-                .collect::<Vec<CubeResult>>();
+                .collect::<Vec<GameSet>>();
 
-                GameSet {
-                    cube_results
-                }
-            })
-            .collect::<Vec<GameSet>>();
-
-            Game {
-                id: game_id,
-                sets
-            }
+            Game { id: game_id, sets }
         })
         .collect::<Vec<Game>>()
 }
@@ -130,10 +124,9 @@ pub fn cube_conundrum(input: &str, expected_cube_results: ExpectedCubeResults) -
             game_id_sum += game.id;
         }
     }
-    
+
     game_id_sum
 }
-
 
 #[cfg(test)]
 mod tests {

@@ -21,7 +21,6 @@
     Consider your entire calibration document. What is the sum of all of the calibration values?
 */
 
-
 pub fn trebuchet(input: &str) -> u32 {
     let mut numbers: Vec<u32> = Vec::new();
     let mut first: Option<u32> = Option::None;
@@ -29,10 +28,9 @@ pub fn trebuchet(input: &str) -> u32 {
 
     let bytes = input.as_bytes();
     for i in 0..bytes.len() {
-
-        let c =  match bytes.get(i) {
+        let c = match bytes.get(i) {
             Some(val) => *val as char,
-            None => '\n'
+            None => '\n',
         };
 
         if c == '\n' {
@@ -42,7 +40,7 @@ pub fn trebuchet(input: &str) -> u32 {
             let unwrapped_first = first.unwrap();
             let unwrapped_last = match last {
                 Some(val) => val,
-                None => unwrapped_first
+                None => unwrapped_first,
             };
             numbers.push(unwrapped_first * 10 + unwrapped_last);
             first = Option::None;
@@ -51,13 +49,11 @@ pub fn trebuchet(input: &str) -> u32 {
         }
 
         match c.to_digit(10) {
-            Some(digit) => {
-                match first {
-                    Some(_) => last = Some(digit),
-                    None => first = Some(digit)
-                }
+            Some(digit) => match first {
+                Some(_) => last = Some(digit),
+                None => first = Some(digit),
             },
-            None => continue
+            None => continue,
         }
     }
     return numbers.iter().sum();
