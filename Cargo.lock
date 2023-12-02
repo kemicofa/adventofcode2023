@@ -5,3 +5,17 @@ version = 3
 [[package]]
 name = "day1_trebuchet"
 version = "0.1.0"
+dependencies = [
+ "utils",
+]
+
+[[package]]
+name = "day2_cube_conundrum"
+version = "0.1.0"
+dependencies = [
+ "utils",
+]
+
+[[package]]
+name = "utils"
+version = "0.1.0"

@@ -1,3 +1,5 @@
+use utils::split_and_clean_input_into_lines;
+
 /**
     Day 1: Trebuchet?!
     https://adventofcode.com/2023/day/1
@@ -96,14 +98,6 @@ fn map_word_to_digit(word: &str) -> u32 {
         return (i as u32) + 1;
     }
     panic!("Should never arrive here");
-}
-
-fn split_and_clean_input_into_lines(input: &str) -> Vec<&str> {
-    input
-    .trim()
-    .split('\n')
-    .map(|line| line.trim())
-    .collect::<Vec<&str>>()
 }
 
 pub fn trebuchet(input: &str) -> u32 {
