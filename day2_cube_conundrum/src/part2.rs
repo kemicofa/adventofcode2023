@@ -93,22 +93,11 @@ pub enum CubeColor {
     GREEN,
 }
 
-fn map_color_str_to_cube_color(color: &str) -> CubeColor {
-    match color {
-        "red" => CubeColor::RED,
-        "blue" => CubeColor::BLUE,
-        "green" => CubeColor::GREEN,
-        _ => panic!("Should never happen"),
-    }
-}
-
 fn parse_input(input: &str) -> Vec<Game> {
     split_and_clean_input_into_lines(input)
         .iter()
         .map(|raw_game| {
-            let (game_meta, sets_data) = raw_game.trim().split_once(':').unwrap();
-
-            let game_id = game_meta.split_once(' ').unwrap().1.parse::<u32>().unwrap();
+            let (_, sets_data) = raw_game.trim().split_once(':').unwrap();
 
             let sets = sets_data
                 .split(';')
@@ -120,13 +109,13 @@ fn parse_input(input: &str) -> Vec<Game> {
                     for raw_balls_data in raw_set.split(',') {
                         let (ball_count_str, color) =
                             raw_balls_data.trim().split_once(' ').unwrap();
-                        let cube_color = map_color_str_to_cube_color(color);
                         let ball_count = ball_count_str.parse::<u32>().unwrap();
 
-                        match cube_color {
-                            CubeColor::BLUE => blue_count = Some(ball_count),
-                            CubeColor::GREEN => green_count = Some(ball_count),
-                            CubeColor::RED => red_count = Some(ball_count),
+                        match color {
+                            "blue" => blue_count = Some(ball_count),
+                            "green" => green_count = Some(ball_count),
+                            "red" => red_count = Some(ball_count),
+                            _ => panic!("Should never happen"),
                         };
                     }
 
