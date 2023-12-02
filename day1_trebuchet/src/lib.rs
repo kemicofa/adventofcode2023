@@ -49,7 +49,7 @@ fn find_first_and_last_digits(line: &str) -> [(u32, Option<usize>); 2] {
 
     for i in 0..bytes.len() {
         let left_byte = bytes.get(i).unwrap();
-        let right_index = bytes.len() -1 - i;
+        let right_index = bytes.len() - 1 - i;
         let right_byte = bytes.get(bytes.len() - 1 - i).unwrap();
 
         if first_index.is_none() {
@@ -57,7 +57,7 @@ fn find_first_and_last_digits(line: &str) -> [(u32, Option<usize>); 2] {
                 Some(val) => {
                     first = val;
                     first_index = Some(i);
-                },
+                }
                 None => {}
             }
         };
@@ -67,7 +67,7 @@ fn find_first_and_last_digits(line: &str) -> [(u32, Option<usize>); 2] {
                 Some(val) => {
                     last = val;
                     last_index = Some(right_index);
-                },
+                }
                 None => {}
             }
         };
@@ -84,7 +84,9 @@ fn combine_two_digits(first: u32, second: u32) -> u32 {
     first * 10 + second
 }
 
-const DIGITS_STR_LIST: [&str; 9] = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+const DIGITS_STR_LIST: [&str; 9] = [
+    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+];
 
 fn map_word_to_digit(word: &str) -> u32 {
     for i in 0..DIGITS_STR_LIST.len() {
@@ -99,17 +101,26 @@ fn map_word_to_digit(word: &str) -> u32 {
 pub fn trebuchet(input: &str) -> u32 {
     let mut numbers: Vec<u32> = Vec::new();
 
-    let lines: Vec<&str> = input.trim().split('\n').map(|line| line.trim()).collect::<Vec<&str>>();
+    let lines: Vec<&str> = input
+        .trim()
+        .split('\n')
+        .map(|line| line.trim())
+        .collect::<Vec<&str>>();
 
     for line in lines {
         // if by coincidence the first or last character
         // are digits then we can save precious time
-        let [(first_digit, first_digit_index), (last_digit, last_digit_index)] = find_first_and_last_digits(line);
+        let [(first_digit, first_digit_index), (last_digit, last_digit_index)] =
+            find_first_and_last_digits(line);
 
         // since no number string length is longer than 3 characters
         // we can assume that if the number we found exists within the first 3 characters
         // it's really the first number (and same logic in reverse for the last)
-        if first_digit_index.is_some() && first_digit_index.unwrap() <= 2 && last_digit_index.is_some() && last_digit_index.unwrap() >= line.len() - 2 {
+        if first_digit_index.is_some()
+            && first_digit_index.unwrap() <= 2
+            && last_digit_index.is_some()
+            && last_digit_index.unwrap() >= line.len() - 2
+        {
             numbers.push(combine_two_digits(first_digit, last_digit));
             continue;
         }
@@ -117,13 +128,13 @@ pub fn trebuchet(input: &str) -> u32 {
         let mut first = first_digit;
         let mut first_index = match first_digit_index {
             Some(index) => index,
-            None => line.len()
+            None => line.len(),
         };
 
         let mut last = last_digit;
         let mut last_index = match last_digit_index {
             Some(index) => index,
-            None => 0
+            None => 0,
         };
 
         for digits_str in DIGITS_STR_LIST {
