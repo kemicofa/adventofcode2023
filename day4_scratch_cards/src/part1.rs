@@ -46,8 +46,7 @@ fn winning_numbers_to_score(winning_number_count: usize) -> u32 {
 
 fn get_numbers_from_str(input: &str) -> Vec<u32> {
     input.trim()
-        .split(' ')
-        .filter(|val| !val.is_empty())
+        .split_whitespace()
         .map(|val| val.trim().parse::<u32>().unwrap())
         .collect::<Vec<u32>>()
 }
