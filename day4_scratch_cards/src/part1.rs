@@ -45,17 +45,16 @@ fn winning_numbers_to_score(winning_number_count: usize) -> u32 {
 }
 
 fn get_numbers_from_str(input: &str) -> Vec<u32> {
-    input.trim()
+    input
+        .trim()
         .split_whitespace()
         .map(|val| val.trim().parse::<u32>().unwrap())
         .collect::<Vec<u32>>()
 }
 
 fn get_winning_and_selected_numbers_from_str(input: &str) -> (Vec<u32>, Vec<u32>) {
-    let (winning_numbers_str, selected_numbers_str) = input.split_once(':')
-    .unwrap().1
-    .split_once('|')
-    .unwrap();
+    let (winning_numbers_str, selected_numbers_str) =
+        input.split_once(':').unwrap().1.split_once('|').unwrap();
 
     let winning_numbers = get_numbers_from_str(winning_numbers_str);
     let selected_numbers = get_numbers_from_str(selected_numbers_str);
@@ -67,7 +66,8 @@ fn parse_input(input: &str) -> Vec<(Vec<u32>, Vec<u32>)> {
     split_and_clean_input_into_lines(input)
         .iter()
         .map(|card| {
-            let (winning_numbers, selected_numbers) = get_winning_and_selected_numbers_from_str(card);
+            let (winning_numbers, selected_numbers) =
+                get_winning_and_selected_numbers_from_str(card);
             return (winning_numbers, selected_numbers);
         })
         .collect::<Vec<(Vec<u32>, Vec<u32>)>>()
@@ -78,10 +78,11 @@ pub fn scratch_cards(input: &str) -> u32 {
     cards
         .iter()
         .map(|(winning_numbers, selected_numbers)| {
-            winning_numbers_to_score(winning_numbers
-                .iter()
-                .filter(|val| selected_numbers.contains(val))
-                .count()
+            winning_numbers_to_score(
+                winning_numbers
+                    .iter()
+                    .filter(|val| selected_numbers.contains(val))
+                    .count(),
             )
         })
         .sum()

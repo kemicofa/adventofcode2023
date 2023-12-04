@@ -34,7 +34,8 @@ use std::collections::HashMap;
 use utils::split_and_clean_input_into_lines;
 
 fn get_numbers_from_str(input: &str) -> Vec<u32> {
-    input.trim()
+    input
+        .trim()
         .split_whitespace()
         .map(|val| val.trim().parse::<u32>().unwrap())
         .collect::<Vec<u32>>()
@@ -42,11 +43,13 @@ fn get_numbers_from_str(input: &str) -> Vec<u32> {
 
 fn get_winning_and_selected_numbers_from_str(input: &str) -> (u32, Vec<u32>, Vec<u32>) {
     let (card_metadata, card_data) = input.split_once(':').unwrap();
-    let card_id = card_metadata.split_whitespace().last().unwrap().parse::<u32>().unwrap();
-    let (winning_numbers_str, selected_numbers_str) = 
-    card_data
-    .split_once('|')
-    .unwrap();
+    let card_id = card_metadata
+        .split_whitespace()
+        .last()
+        .unwrap()
+        .parse::<u32>()
+        .unwrap();
+    let (winning_numbers_str, selected_numbers_str) = card_data.split_once('|').unwrap();
 
     let winning_numbers = get_numbers_from_str(winning_numbers_str);
     let selected_numbers = get_numbers_from_str(selected_numbers_str);
@@ -58,7 +61,8 @@ fn parse_input(input: &str) -> Vec<(u32, Vec<u32>, Vec<u32>)> {
     split_and_clean_input_into_lines(input)
         .iter()
         .map(|card| {
-            let (card_id, winning_numbers, selected_numbers) = get_winning_and_selected_numbers_from_str(card);
+            let (card_id, winning_numbers, selected_numbers) =
+                get_winning_and_selected_numbers_from_str(card);
             return (card_id, winning_numbers, selected_numbers);
         })
         .collect::<Vec<(u32, Vec<u32>, Vec<u32>)>>()
@@ -77,10 +81,10 @@ pub fn scratch_cards(input: &str) -> u32 {
 
             let instances = match instances_map.get(card_id) {
                 Some(instances) => *instances,
-                None => 1
+                None => 1,
             };
 
-            for i in 1..(winning_numbers_chosen_count+1) {
+            for i in 1..(winning_numbers_chosen_count + 1) {
                 let key = card_id + i;
                 if let Some(next_instances) = instances_map.get_mut(&key) {
                     *next_instances += instances;
