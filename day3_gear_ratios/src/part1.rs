@@ -38,14 +38,17 @@ struct PartNumber {
     value: u32,
     x_start: usize,
     x_end: usize,
-    y: usize
+    y: usize,
 }
 
 impl PartNumber {
     pub fn is_adjacent(&self, x: usize, y: usize) -> bool {
         let x_offset = x + 1;
         let y_offset = y + 1;
-        x_offset >= self.x_start && x_offset <= self.x_end + 2 && y_offset >= self.y && y_offset <= self.y + 2
+        x_offset >= self.x_start
+            && x_offset <= self.x_end + 2
+            && y_offset >= self.y
+            && y_offset <= self.y + 2
     }
 }
 
@@ -70,17 +73,17 @@ pub fn gear_ratios(input: &str) -> u32 {
                 current_gear_number = current_gear_number * 10 + digit;
                 continue;
             }
-            
+
             if *cell != '.' {
                 symbols_positions.push((j, i));
             }
 
             if start_index.is_some() {
-                part_numbers.push(PartNumber { 
-                    value: current_gear_number, 
-                    x_start: start_index.unwrap(), 
-                    x_end: j - 1, 
-                    y: i
+                part_numbers.push(PartNumber {
+                    value: current_gear_number,
+                    x_start: start_index.unwrap(),
+                    x_end: j - 1,
+                    y: i,
                 });
                 start_index = Option::None;
                 current_gear_number = 0;
@@ -88,12 +91,12 @@ pub fn gear_ratios(input: &str) -> u32 {
         }
 
         if start_index.is_some() {
-            part_numbers.push(PartNumber { 
-                value: current_gear_number, 
-                x_start: start_index.unwrap(), 
-                x_end: row.len() - 1, 
-                y: i
-            });       
+            part_numbers.push(PartNumber {
+                value: current_gear_number,
+                x_start: start_index.unwrap(),
+                x_end: row.len() - 1,
+                y: i,
+            });
         }
     }
 
@@ -107,7 +110,7 @@ pub fn gear_ratios(input: &str) -> u32 {
             }
         }
     }
-    
+
     return sum;
 }
 
@@ -277,6 +280,5 @@ mod tests {
             ......898...561.186...207....270.....................................968...231..181..................324.........696........................
         "#;
         assert_eq!(gear_ratios(input), 532428);
-
     }
 }

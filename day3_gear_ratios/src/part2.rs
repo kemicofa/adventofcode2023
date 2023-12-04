@@ -67,14 +67,17 @@ struct PartNumber {
     value: u32,
     x_start: usize,
     x_end: usize,
-    y: usize
+    y: usize,
 }
 
 impl PartNumber {
     pub fn is_adjacent(&self, x: &usize, y: &usize) -> bool {
         let x_offset = x + 1;
         let y_offset = y + 1;
-        x_offset >= self.x_start && x_offset <= self.x_end + 2 && y_offset >= self.y && y_offset <= self.y + 2
+        x_offset >= self.x_start
+            && x_offset <= self.x_end + 2
+            && y_offset >= self.y
+            && y_offset <= self.y + 2
     }
 }
 
@@ -83,13 +86,13 @@ fn build_hash_key(x: &usize, y: &usize) -> usize {
 }
 
 pub fn gear_ratios(input: &str) -> u32 {
-    let gears = parse_input(input);
+    let rows = parse_input(input);
 
     let mut part_numbers: Vec<PartNumber> = Vec::new();
     let mut symbols_positions: Vec<(usize, usize)> = Vec::new();
-    
-    for i in 0..gears.len() {
-        let row = gears.get(i).unwrap();
+
+    for i in 0..rows.len() {
+        let row = rows.get(i).unwrap();
         let mut start_index = Option::None;
         let mut current_gear_number = 0;
 
@@ -103,20 +106,17 @@ pub fn gear_ratios(input: &str) -> u32 {
                 current_gear_number = current_gear_number * 10 + digit;
                 continue;
             }
-            
+
             if *cell == '*' {
-                symbols_positions.push((
-                    j,
-                    i,
-                ));
+                symbols_positions.push((j, i));
             }
 
             if start_index.is_some() {
-                part_numbers.push(PartNumber { 
-                    value: current_gear_number, 
-                    x_start: start_index.unwrap(), 
-                    x_end: j - 1, 
-                    y: i
+                part_numbers.push(PartNumber {
+                    value: current_gear_number,
+                    x_start: start_index.unwrap(),
+                    x_end: j - 1,
+                    y: i,
                 });
                 start_index = Option::None;
                 current_gear_number = 0;
@@ -124,19 +124,19 @@ pub fn gear_ratios(input: &str) -> u32 {
         }
 
         if start_index.is_some() {
-            part_numbers.push(PartNumber { 
-                value: current_gear_number, 
-                x_start: start_index.unwrap(), 
-                x_end: row.len() - 1, 
-                y: i
-            });       
+            part_numbers.push(PartNumber {
+                value: current_gear_number,
+                x_start: start_index.unwrap(),
+                x_end: row.len() - 1,
+                y: i,
+            });
         }
     }
 
     let mut map: HashMap<usize, (u32, u32)> = HashMap::new();
 
     for part_number in part_numbers {
-        for (x, y, ) in &symbols_positions {
+        for (x, y) in &symbols_positions {
             if part_number.is_adjacent(x, y) {
                 let key = build_hash_key(x, y);
                 if map.contains_key(&key) {
@@ -149,14 +149,13 @@ pub fn gear_ratios(input: &str) -> u32 {
         }
     }
 
-    
     let sum = map.iter().fold(0, |acc, (_, (count, value))| {
         if *count > 1 {
             return acc + value;
         }
         acc
     });
-    
+
     return sum;
 }
 
@@ -326,6 +325,5 @@ mod tests {
             ......898...561.186...207....270.....................................968...231..181..................324.........696........................
         "#;
         assert_eq!(gear_ratios(input), 84051670);
-
     }
 }
