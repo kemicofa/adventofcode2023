@@ -86,6 +86,9 @@ pub fn scratch_cards(input: &str) -> u32 {
 
             for i in 1..(winning_numbers_chosen_count + 1) {
                 let key = card_id + i;
+                if key > cards.len() as u32 {
+                    break;
+                }
                 if let Some(next_instances) = instances_map.get_mut(&key) {
                     *next_instances += instances;
                 } else {
