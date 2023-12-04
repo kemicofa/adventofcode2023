@@ -35,8 +35,7 @@ use utils::split_and_clean_input_into_lines;
 
 fn get_numbers_from_str(input: &str) -> Vec<u32> {
     input.trim()
-        .split(' ')
-        .filter(|val| !val.is_empty())
+        .split_whitespace()
         .map(|val| val.trim().parse::<u32>().unwrap())
         .collect::<Vec<u32>>()
 }
