@@ -31,5 +31,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "day5_if_you_give_a_seed_a_fertilizer"
+version = "0.1.0"
+dependencies = [
+ "utils",
+]
+
+[[package]]
 name = "utils"
 version = "0.1.0"
