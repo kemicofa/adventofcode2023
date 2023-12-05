@@ -117,7 +117,7 @@ impl SourceToDestination {
 
     pub fn get_destination(&self, source_id: u32) -> Option<u32> {
         let diff = source_id as i64 - self.source_range_start as i64;
-        if diff >= 0 && diff <= self.range_length as i64 {
+        if diff >= 0 && diff < self.range_length as i64 {
             return Some(self.destination_range_start + diff as u32);
         }
 
