@@ -46,15 +46,12 @@ use utils::split_and_clean_input_into_lines;
 
 pub struct Race {
     time: u32,
-    distance: u32
+    distance: u32,
 }
 
 impl Race {
     pub fn new(time: u32, distance: u32) -> Self {
-        Self {
-            time,
-            distance
-        }
+        Self { time, distance }
     }
 
     pub fn get_number_of_ways_to_win(&self) -> u32 {
@@ -72,7 +69,15 @@ impl Race {
 pub fn parse_input(input: &str) -> Vec<Race> {
     let data = split_and_clean_input_into_lines(input)
         .iter()
-        .map(|line| line.split_once(':').unwrap().1.trim().split_whitespace().map(|val| val.parse::<u32>().unwrap()).collect::<Vec<u32>>())
+        .map(|line| {
+            line.split_once(':')
+                .unwrap()
+                .1
+                .trim()
+                .split_whitespace()
+                .map(|val| val.parse::<u32>().unwrap())
+                .collect::<Vec<u32>>()
+        })
         .collect::<Vec<Vec<u32>>>();
 
     if data.len() != 2 {

@@ -22,10 +22,9 @@
     Using the new joker rule, find the rank of every hand in your set. What are the new total winnings?
 */
 
-use std::{collections::HashMap, cmp::Ordering};
+use std::{cmp::Ordering, collections::HashMap};
 
 use utils::split_and_clean_input_into_lines;
-
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum HandType {
@@ -46,14 +45,13 @@ impl HandType {
         let mut jokers_count = 0;
 
         for card in cards {
-
             if card == JOKER {
                 jokers_count += 1;
                 continue;
             }
 
             if let Some(count) = map.get_mut(&card) {
-                *count += 1; 
+                *count += 1;
             } else {
                 map.insert(card, 1);
             }
@@ -69,11 +67,11 @@ impl HandType {
                 4 => {
                     four_of_a_kind = true;
                     break;
-                },
+                }
                 3 => three_of_a_kind = true,
                 2 => two_of_a_kind_count += 1,
                 1 => continue,
-                _ => panic!("should never happen")
+                _ => panic!("should never happen"),
             }
         }
 
@@ -81,18 +79,24 @@ impl HandType {
             match jokers_count {
                 5 => return Self::FiveOfAKind,
                 4 => return Self::FiveOfAKind,
-                3 => return if two_of_a_kind_count == 1 {
+                3 => {
+                    return if two_of_a_kind_count == 1 {
                         Self::FiveOfAKind
+                    } else {
+                        Self::FourOfAKind
                     }
-                    else { Self::FourOfAKind },
-                2 => return if three_of_a_kind {
+                }
+                2 => {
+                    return if three_of_a_kind {
                         Self::FiveOfAKind
                     } else if two_of_a_kind_count == 1 {
                         Self::FourOfAKind
+                    } else {
+                        Self::ThreeOfAKind
                     }
-                    else  { Self::ThreeOfAKind }
-                ,
-                1 => return if four_of_a_kind {
+                }
+                1 => {
+                    return if four_of_a_kind {
                         Self::FiveOfAKind
                     } else if three_of_a_kind {
                         Self::FourOfAKind
@@ -100,7 +104,10 @@ impl HandType {
                         HandType::FullHouse
                     } else if two_of_a_kind_count == 1 {
                         HandType::ThreeOfAKind
-                    } else { HandType::OnePair },
+                    } else {
+                        HandType::OnePair
+                    }
+                }
                 _ => {}
             }
 
@@ -121,7 +128,7 @@ impl HandType {
         match two_of_a_kind_count {
             2 => Self::TwoPair,
             1 => Self::OnePair,
-            _ => HandType::HighCard
+            _ => HandType::HighCard,
         }
     }
 }
@@ -132,7 +139,7 @@ type Cards = [u8; 5];
 struct Hand {
     cards: Cards,
     t: HandType,
-    hash: String
+    hash: String,
 }
 
 impl Hand {
@@ -145,11 +152,7 @@ impl Hand {
     pub fn new(cards: Cards) -> Self {
         let t = HandType::cards_to_type(cards);
         let hash = Self::hash(cards);
-        Self {
-            cards,
-            t,
-            hash
-        }
+        Self { cards, t, hash }
     }
 }
 
@@ -167,7 +170,6 @@ impl PartialOrd for Hand {
     }
 }
 
-
 impl Ord for Hand {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         let ordering = self.t.cmp(&other.t);
@@ -180,7 +182,7 @@ impl Ord for Hand {
             match self.cards[i].cmp(&other.cards[i]) {
                 Ordering::Equal => continue,
                 Ordering::Less => return Ordering::Less,
-                Ordering::Greater => return Ordering::Greater
+                Ordering::Greater => return Ordering::Greater,
             }
         }
 
@@ -195,12 +197,15 @@ fn map_card_type_to_value(c: char) -> u8 {
         'Q' => 0xB,
         'J' => JOKER, // now the weakest card
         'T' => 0xA,
-        _ => (c.to_digit(16).unwrap()).try_into().unwrap()
+        _ => (c.to_digit(16).unwrap()).try_into().unwrap(),
     }
 }
 
 fn parse_str_to_hand(input: &str) -> Hand {
-    let hand_of_numbers = input.chars().map(|c| map_card_type_to_value(c)).collect::<Vec<u8>>();
+    let hand_of_numbers = input
+        .chars()
+        .map(|c| map_card_type_to_value(c))
+        .collect::<Vec<u8>>();
     Hand::new(hand_of_numbers.try_into().unwrap())
 }
 
@@ -218,8 +223,7 @@ fn parse_input(input: &str) -> Vec<(Hand, u32)> {
 
 pub fn solve(input: &str) -> u32 {
     let mut hands_and_bids = parse_input(input);
-    hands_and_bids
-        .sort_by(|(hand_a, _), (hand_b, _)| hand_a.cmp(hand_b));
+    hands_and_bids.sort_by(|(hand_a, _), (hand_b, _)| hand_a.cmp(hand_b));
 
     let mut result: u32 = 0;
     for i in 0..hands_and_bids.len() {
