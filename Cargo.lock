@@ -52,5 +52,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "day8_haunted_wasteland"
+version = "0.1.0"
+dependencies = [
+ "utils",
+]
+
+[[package]]
 name = "utils"
 version = "0.1.0"
