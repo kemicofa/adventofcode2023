@@ -40,7 +40,7 @@ use utils::split_and_clean_input_into_lines;
 #[derive(Debug)]
 enum Instruction {
     LEFT,
-    RIGHT
+    RIGHT,
 }
 
 #[derive(Debug)]
@@ -51,10 +51,7 @@ struct Instructions {
 
 impl Instructions {
     pub fn new(values: Vec<Instruction>) -> Self {
-        Self {
-            values,
-            index: 0,
-        }
+        Self { values, index: 0 }
     }
 
     fn get_instruction(&mut self) -> &Instruction {
@@ -78,16 +75,13 @@ struct Node {
 
 impl Node {
     pub fn new(left: String, right: String) -> Self {
-        Self {
-            left,
-            right
-        }
+        Self { left, right }
     }
 
     pub fn get_destination(&self, instruction: &Instruction) -> &String {
         match instruction {
             Instruction::LEFT => &self.left,
-            Instruction::RIGHT => &self.right
+            Instruction::RIGHT => &self.right,
         }
     }
 }
@@ -98,15 +92,22 @@ fn parse_input(input: &str) -> (Network, Instructions) {
     let lines = split_and_clean_input_into_lines(input);
     let mut lines_iter = lines.iter();
 
-    let instructions = lines_iter.next().unwrap().chars()
-        .map(|val| match val { 'R' => Instruction::RIGHT, 'L' => Instruction::LEFT, _ => panic!("Should either be L or R instructions")})
+    let instructions = lines_iter
+        .next()
+        .unwrap()
+        .chars()
+        .map(|val| match val {
+            'R' => Instruction::RIGHT,
+            'L' => Instruction::LEFT,
+            _ => panic!("Should either be L or R instructions"),
+        })
         .collect::<Vec<Instruction>>();
 
     // ignore empty line
     lines_iter.next();
 
     let mut network: Network = HashMap::new();
-    
+
     for line in lines_iter {
         let (key, raw_destinations) = line.split_once(" = ").unwrap();
         let (destination_left, destination_right) = raw_destinations
@@ -114,7 +115,13 @@ fn parse_input(input: &str) -> (Network, Instructions) {
             .split_once(",")
             .unwrap();
 
-        network.insert(key.trim(), Node::new(destination_left.trim().to_string(), destination_right.trim().to_string()));
+        network.insert(
+            key.trim(),
+            Node::new(
+                destination_left.trim().to_string(),
+                destination_right.trim().to_string(),
+            ),
+        );
     }
 
     (network, Instructions::new(instructions))
@@ -150,7 +157,10 @@ pub fn solve(input: &str) -> u64 {
         .filter(|key| key.ends_with('A'))
         .collect::<Vec<&str>>();
 
-    let mut node_keys = starting_node_ids.iter().map(|v| Some(*v)).collect::<Vec<Option<&str>>>();
+    let mut node_keys = starting_node_ids
+        .iter()
+        .map(|v| Some(*v))
+        .collect::<Vec<Option<&str>>>();
 
     let mut steps = 0;
     let mut steps_completed_list: Vec<u32> = vec![];
@@ -189,7 +199,6 @@ pub fn solve(input: &str) -> u64 {
 
     lcm_of_numbers(steps_completed_list)
 }
-
 
 #[cfg(test)]
 mod tests {
