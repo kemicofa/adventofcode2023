@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use super::{card::Cards, consts::JOKER};
 
-
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum HandType {
     HighCard,

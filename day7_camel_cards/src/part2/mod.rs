@@ -1,7 +1,7 @@
-mod hand;
 mod card;
-mod hand_type;
 mod consts;
+mod hand;
+mod hand_type;
 
 /*
     --- Day 7: Camel Cards ---
@@ -29,7 +29,7 @@ mod consts;
 
 use utils::split_and_clean_input_into_lines;
 
-use self::{hand::Hand, consts::JOKER};
+use self::{consts::JOKER, hand::Hand};
 
 fn map_card_type_to_value(c: char) -> u8 {
     match c {
