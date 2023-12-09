@@ -33,9 +33,10 @@ fn solve_history(initial_values: &Vec<i32>) -> i32 {
         }
     }
 
+    levels.reverse();
     levels
         .iter()
-        .fold(0, |acc, level| acc + level.last().unwrap())
+        .fold(0, |acc, level| level.first().unwrap() - acc)
 }
 
 pub fn solve(input: &str) -> i32 {
@@ -57,16 +58,7 @@ mod tests {
             10 13 16 21 30 45
         "#;
 
-        assert_eq!(solve(input), 114);
-    }
-
-    #[test]
-    fn it_works_too() {
-        let input = r#"
-        -3 10 36 70 97 86 -21 -325 -990 -2262 -4472 -7980 -12923 -18336 -19424 87 87451 366536 1136900 3075432 7624577
-        "#;
-
-        assert_eq!(solve(input), -5653);
+        assert_eq!(solve(input), 2);
     }
 
     #[test]
@@ -274,6 +266,6 @@ mod tests {
         2 -6 -3 39 165 441 958 1836 3228 5324 8355 12597 18375 26067 36108 48994 65286 85614 110681 141267 178233
         "#;
 
-        assert_eq!(solve(input), 1731106378);
+        assert_eq!(solve(input), 1087);
     }
 }
