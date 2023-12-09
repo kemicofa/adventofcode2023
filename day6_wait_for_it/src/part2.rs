@@ -80,7 +80,7 @@ mod tests {
             Time:      7  15   30
             Distance:  9  40  200
         "#;
-        assert_eq!(solve(input), 71516);
+        assert_eq!(solve(input), 71503);
     }
 
     #[test]
