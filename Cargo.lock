@@ -3,6 +3,13 @@
 version = 3
 
 [[package]]
+name = "day10_pipe_maze"
+version = "0.1.0"
+dependencies = [
+ "utils",
+]
+
+[[package]]
 name = "day1_trebuchet"
 version = "0.1.0"
 dependencies = [
