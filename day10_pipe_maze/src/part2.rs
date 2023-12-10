@@ -77,7 +77,7 @@ fn parse_input(input: &str) -> ((usize, usize), Maze) {
     let mut maze: Maze = vec![];
 
     for y in 0..lines.len() {
-        let line = lines.get(y).unwrap();
+        let line = lines[y];
         let mut maze_row = vec![];
         for x in 0..line.len() {
             let c = line.get(x..x + 1).unwrap().parse::<char>().unwrap();
@@ -148,9 +148,9 @@ fn is_point_inside_polygon(point: (f64, f64), polygon: &Vec<(f64, f64)>) -> bool
 fn get_ground_vertices(maze: &Maze, polygon: &Vec<(f64, f64)>) -> Vec<(usize, usize)> {
     let mut vertices = vec![];
     for y in 0..maze.len() {
-        let row = maze.get(y).unwrap();
+        let row = &maze[y];
         for x in 0..row.len() {
-            let cell = row.get(x).unwrap();
+            let cell = row[x];
             if cell.is_none() || !polygon.contains(&(x as f64, y as f64)) {
                 vertices.push((x, y));
             }
@@ -173,7 +173,7 @@ pub fn solve(input: &str) -> u32 {
         x = (x as i64 + current_direction.0 as i64) as usize;
         y = (y as i64 + current_direction.1 as i64) as usize;
 
-        let current_pipe = maze.get(y).unwrap().get(x).unwrap().unwrap();
+        let current_pipe = maze[y][x].unwrap();
 
         polygon.push((x as f64, y as f64));
         if current_pipe.val == S {
