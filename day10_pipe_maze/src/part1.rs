@@ -15,13 +15,6 @@ struct Pipe {
 }
 
 impl Pipe {
-    pub fn direction_match(&self, direction: Direction) -> bool {
-        self.directions
-            .iter()
-            .find(|dir| dir.0 == direction.0 && dir.1 == direction.1)
-            .is_some()
-    }
-
     pub fn get_next_direction(&self, direction: Direction) -> Direction {
         let dir_a = self.directions[0];
         let dir_b = self.directions[1];
@@ -120,8 +113,12 @@ fn get_initial_direction(start_x: usize, start_y: usize, maze: &Maze) -> Directi
             None => continue,
         };
 
-        if pipe.direction_match((xo, yo)) {
-            return (xo, yo);
+        for (px, py) in pipe.directions {
+            if xc as i32 + (px as i32) == start_x as i32
+                && yc as i32 + (py as i32) == start_y as i32
+            {
+                return (xo, yo);
+            }
         }
     }
     panic!("Should never arrive here");
