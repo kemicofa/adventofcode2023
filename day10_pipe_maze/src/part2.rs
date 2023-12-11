@@ -132,11 +132,10 @@ fn is_point_inside_polygon(point: (f64, f64), polygon: &Vec<(f64, f64)>) -> bool
 
         let xi = polygon[i].0;
         let yi = polygon[i].1;
-        let xj = polygon[j].0;
         let yj = polygon[j].1;
 
         let intersect = ((yi > point.1) != (yj > point.1))
-            && (point.0 < (xj - xi) * (point.1 - yi) / (yj - yi) + xi);
+            && (point.0 < xi);
 
         if intersect {
             inside = !inside;
